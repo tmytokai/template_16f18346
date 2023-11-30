@@ -2,7 +2,7 @@
 
 // CONFIG1
 #pragma config FEXTOSC = OFF
-#pragma config RSTOSC = HFINT32
+#pragma config RSTOSC = HFINT1
 #pragma config CLKOUTEN = OFF
 #pragma config CSWEN = ON
 #pragma config FCMEN = OFF

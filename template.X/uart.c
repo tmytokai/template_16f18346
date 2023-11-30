@@ -57,7 +57,7 @@ void init_uart(void)
     TX1STAbits.SYNC = 0; // 非同期(Asynchronous)モード
     BAUD1CONbits.BRG16 = 1; // 16bit ボーレートジェネレータ使用
     TX1STAbits.BRGH = 1; // 高速モード
-    SP1BRG = 34; // 通信速度 = (16*10^6)/(4*(34+1)) = 114285.7 ≒ 115200
+    SP1BRG = 8; // 通信速度 = (4*10^6)/(4*(8+1)) = 111111.111 ≒ 115200
 
     // 送信設定
     if( tx_status == TX_ENABLE ){

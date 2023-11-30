@@ -3,7 +3,7 @@
 #include <xc.h>
 #include "../include/proc/pic16f18346.h"
 
-#define _XTAL_FREQ 16000000
+#define _XTAL_FREQ 4000000
 
 enum
 {

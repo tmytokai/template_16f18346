@@ -49,32 +49,17 @@ void main(void)
 
 void __interrupt () isr(void) 
 {
-    if( PIR1bits.TMR2IF ){
+    if( PIR1bits.TMR1IF ){
         adc_isr();
-        PIR1bits.TMR2IF = 0;
-    }
-    if( PIR4bits.CCP1IF ){
-        pwm_isr1();     
-        PIR4bits.CCP1IF = 0;
-    }
-    if( PIR4bits.CCP2IF ){
-        pwm_isr2(); 
-        PIR4bits.CCP2IF = 0;
-    }
-    if( PIR4bits.CCP3IF ){
-        pwm_isr3(); 
-        PIR4bits.CCP3IF = 0;
-    }
-    if( PIR4bits.CCP4IF ){       
-        pwm_isr4(); 
-        PIR4bits.CCP4IF = 0;
+        PIR1bits.TMR1IF = 0;
     }
 }
 
 void init()
 {
-    // 周波数 = Freq/DIV = 32/2 = 16MHz
-    OSCCON1bits.NDIV = 0b0001; // DIV = 2
+    // 周波数 = Freq/DIV = 4/1 = 4MHz
+    OSCFRQbits.HFFRQ = 0b0011; // Freq=4Mhz
+    OSCCON1bits.NDIV = 0b0000; // DIV = 1
 
     PORTA = 0x0;
     PORTB = 0x0;

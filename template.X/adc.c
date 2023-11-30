@@ -44,6 +44,7 @@ void adc_isr(void)
 
         adc_status = ADC_GO;
     }
+    TMR1 = 65535-ADC_INTERVAL;
 }
 
 void init_adc(void)
@@ -123,7 +124,7 @@ void init_adc(void)
 
     // ADC クロック設定
     // 早すぎると正しく変換できないので、238p 表22-1 で影が入ってないマス目のスピードを選ぶ
-    ADCON1bits.ADCS = 0b010;  // FOSC=16MHzなので FOSC/32 を選択
+    ADCON1bits.ADCS = 0b001;  // FOSC=4MHzなので FOSC/8 を選択
 
     // ADC 割り込み不許可
     PIE1bits.ADIE = 0;
@@ -131,33 +132,14 @@ void init_adc(void)
     // ADC 有効化
     ADCON0bits.ADON = 1;
 
-    // タイマー2のクロックは FOSC/4 固定
-
-    // タイマー2 prescale
-    // 0b11 : x64
-    T2CONbits.T2CKPS = 0b11;
-    
-    // タイマー2 postscale
-    // 0b1111 = 1:16
-    T2CONbits.T2OUTPS = 0b1111;
-    
-    // 16Mhz で駆動しているので
-    // タイマーのカウントアップ間隔 = prescale/(FOSC/4) = 64/(16/4*10^6) = 16 マイクロ秒
-    // タイマーリセット間隔
-    // 割り込み間隔 =  16 * PR2 * postscale =  256 * PR2 マイクロ秒 
-    PR2 = ADC_INTERVAL/2/256;
-    
-    // タイマー2 カウンターリセット
-    TMR2 = 0;
-
-    // タイマー2 割り込みフラグリセット
-    PIR1bits.TMR2IF = 0;
-        
-    // タイマー2 割り込み許可
-    PIE1bits.TMR2IE = 1;
-
-    // タイマー2 有効化
-    T2CONbits.TMR2ON = 1;
+    // タイマー1を使用
+    // 4Mhz で駆動しているのでタイマーのカウントアップ間隔 = prescale*1/(FOSC/4) = 1/(4/4*10^6) = 1 マイクロ秒
+    T1CONbits.TMR1CS = 0b00; // クロック : FOSC/4
+    T1CONbits.T1CKPS = 0b00; // prescale : 1
+    TMR1 = 65535-ADC_INTERVAL;
+    PIR1bits.TMR1IF = 0; // タイマー 割り込みフラグリセット
+    PIE1bits.TMR1IE = 1; // タイマー 割り込み許可
+    T1CONbits.TMR1ON = 1; // タイマー 有効化
 
     // 周辺割り込み許可
     INTCONbits.PEIE = 1;
