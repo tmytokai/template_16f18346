@@ -1,15 +1,4 @@
 #include "common.h"
-#include "utils.h"
-#include "uart.h"
-
-enum
-{
-    TX_DISABLE = 0,
-    TX_ENABLE = 1,
-
-    RX_DISABLE = 0,
-    RX_ENABLE = 1,
-};
 
 unsigned char tx_status;
 unsigned char rx_status;
@@ -36,14 +25,14 @@ void init_uart(void)
     getch();
 
     // TX設定
-    unsigned char num = get_port(TX,&tx_porta,&tx_portb,&tx_portc);
+    unsigned char num = get_pinMode(TX,&tx_porta,&tx_portb,&tx_portc);
     if( num ){
-        set_pps(0b10100,tx_porta,tx_portb,tx_portc);
+        set_outputpps(TX,tx_porta,tx_portb,tx_portc);
         tx_status = TX_ENABLE;
     }
 
     // RX設定
-    num = get_port(RX,&rx_porta,&rx_portb,&rx_portc);
+    num = get_pinMode(RX,&rx_porta,&rx_portb,&rx_portc);
     if( num == 1 ){
         set_inputpps(RX,rx_porta,rx_portb,rx_portc);
         rx_status = RX_ENABLE;

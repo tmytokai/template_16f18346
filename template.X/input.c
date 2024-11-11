@@ -1,7 +1,4 @@
 #include "common.h"
-#include "uart.h"
-#include "utils.h"
-#include "input.h"
 
 void init_input(void)
 {
@@ -9,19 +6,27 @@ void init_input(void)
     unsigned char portb = 0;
     unsigned char portc = 0;
     
-    unsigned char num = get_port(INPUT,&porta,&portb,&portc);
-    if( ! num ) return;
+    unsigned char num = get_pinMode(INPUT,&porta,&portb,&portc);
+    if( num )
+    {
+        TRISA |= porta;
+        TRISB |= portb;
+        TRISC |= portc;
+        printf("-----\r\nINPUT:\r\n");
+        printf("portA = 0x%x, portB = 0x%x, portC = 0x%x\r\n", porta, portb, portc);
+    }
     
-    TRISA |= porta;
-    TRISB |= portb;
-    TRISC |= portc;
-    
-    if( INPUT_PULLUP ){
+    num = get_pinMode(INPUT_PULLUP,&porta,&portb,&portc);
+    if( num )
+    {
+        TRISA |= porta;
+        TRISB |= portb;
+        TRISC |= portc;
         WPUA  |= porta;
         WPUB  |= portb;
         WPUC  |= portc;
+        printf("-----\r\nINPUT_PULLUP:\r\n");
+        printf("portA = 0x%x, portB = 0x%x, portC = 0x%x\r\n", porta, portb, portc);
     }
     
-    printf("-----\r\nINPUT:\r\n");
-    printf("pull-up = %d, portA = 0x%x, portB = 0x%x, portC = 0x%x\r\n",INPUT_PULLUP,porta,portb,portc);
 }

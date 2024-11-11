@@ -1,105 +1,182 @@
 #include "common.h"
-#include "config.h"
-#include "utils.h"
-#include "uart.h"
-#include "input.h"
-#include "adc.h"
-#include "pwm.h"
 
-unsigned char PIN01_VDD = 0;
-unsigned char PIN02_RA5 = 0;
-unsigned char PIN03_RA4 = 0;
-unsigned char PIN04_RA3 = 0;
-unsigned char PIN05_RC5 = 0;
-unsigned char PIN06_RC4 = 0;
-unsigned char PIN07_RC3 = 0;
-unsigned char PIN08_RC6 = 0;
-unsigned char PIN09_RC7 = 0;
-unsigned char PIN10_RB7 = 0;
-
-unsigned char PIN11_RB6 = 0;
-unsigned char PIN12_RB5 = 0;
-unsigned char PIN13_RB4 = 0;
-unsigned char PIN14_RC2 = 0;
-unsigned char PIN15_RC1 = 0;
-unsigned char PIN16_RC0 = 0;
-unsigned char PIN17_RA2 = 0;
-unsigned char PIN18_RA1 = 0;
-unsigned char PIN19_RA0 = 0;
-unsigned char PIN20_VSS = 0;
-
-unsigned char INPUT_PULLUP = 1;
-
-void pinconfig(void);
-void run(void);
-void init(void);
-
-//
-// !! 注意 !!!
-//
-// main.c も含めて Modules フォルダ内にあるソースの内容は編集しないこと
-// pinconfig.c と run.c だけ編集する
-//
-void main(void)
+// 例1. LED点滅
+void setup(void)
 {
-    init();
-    while (1) run();
+    // pinMode(ピン名称(または番号),モード)
+    //
+    // モード
+    // OUTPUT  : ディジタル出力 (デフォルト)
+    // INPUT   : ディジタル入力 (内部弱プルアップ 無効)
+    // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
+    // ADC     : アナログ入力 (10 bit)
+    // PWM1〜4 : パルス幅変調 (3系統同時出力可)
+    // TX      : シリアル通信 送信 (115200ボー)
+    // RX      : シリアル通信 受信 (115200ボー)
+    
+    pinMode(PIN16_RC0,OUTPUT);
+    // (補足) ピン番号を使って pinMode(16,OUTPUT); とすることも可能
+    // (補足) OUTPUT はデフォルト動作なので省略可能
+}
+
+void run(void) 
+{
+    while(1){
+        RC0 = 1;
+        __delay_ms(500);
+        RC0 = 0;
+        __delay_ms(500);
+    }
+
     return;
 }
 
-void __interrupt () isr(void) 
+
+/*
+// 例2. ディジタル入力(プルアップ)
+void setup(void)
 {
-    if( PIR1bits.TMR1IF ){
-        adc_isr();
-        PIR1bits.TMR1IF = 0;
+    // pinMode(ピン名称(または番号),モード)
+    //
+    // モード
+    // OUTPUT  : ディジタル出力 (デフォルト)
+    // INPUT   : ディジタル入力 (内部弱プルアップ 無効)
+    // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
+    // ADC     : アナログ入力 (10 bit)
+    // PWM1〜4 : パルス幅変調 (3系統同時出力可)
+    // TX      : シリアル通信 送信 (115200ボー)
+    // RX      : シリアル通信 受信 (115200ボー)
+    
+    pinMode(PIN16_RC0,OUTPUT);
+    // (補足) ピン番号を使って pinMode(16,OUTPUT); とすることも可能
+    // (補足) OUTPUT はデフォルト動作なので省略可能
+    
+    pinMode(PIN17_RA2,INPUT_PULLUP);
+    // (補足) ピン番号を使って pinMode(17,INPUT_PULLUP); とすることも可能
+}
+
+void run(void) 
+{
+    while(1){
+        if(RA2 == 0) RC0 = 1;
+        else RC0 = 0;
     }
+    
+    return;
 }
+*/
 
-void init()
+
+/*
+// 例3. アナログ入力
+// 分解能は10bit(0〜1023)
+void setup(void)
 {
-    // 周波数 = Freq/DIV = 4/1 = 4MHz
-    OSCFRQbits.HFFRQ = 0b0011; // Freq=4Mhz
-    OSCCON1bits.NDIV = 0b0000; // DIV = 1
-
-    PORTA = 0x0;
-    PORTB = 0x0;
-    PORTC = 0x0;
-    TRISA = 0x0;
-    TRISB = 0x0;
-    TRISC = 0x0;
-    ANSELA = 0x0;
-    ANSELB = 0x0;
-    ANSELC = 0x0;
+    // pinMode(ピン名称(または番号),モード)
+    //
+    // モード
+    // OUTPUT  : ディジタル出力 (デフォルト)
+    // INPUT   : ディジタル入力 (内部弱プルアップ 無効)
+    // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
+    // ADC     : アナログ入力 (10 bit)
+    // PWM1〜4 : パルス幅変調 (3系統同時出力可)
+    // TX      : シリアル通信 送信 (115200ボー)
+    // RX      : シリアル通信 受信 (115200ボー)
     
-    PIN01_VDD = VDD;
-    PIN02_RA5 = OUTPUT;
-    PIN03_RA4 = OUTPUT;
-    PIN04_RA3 = MCLR;
-    PIN05_RC5 = OUTPUT;
-    PIN06_RC4 = OUTPUT;   
-    PIN07_RC3 = OUTPUT;
-    PIN08_RC6 = OUTPUT;
-    PIN09_RC7 = OUTPUT;
-    PIN10_RB7 = OUTPUT;
-
-    PIN11_RB6 = OUTPUT;
-    PIN12_RB5 = OUTPUT;
-    PIN13_RB4 = OUTPUT;
-    PIN14_RC2 = OUTPUT;
-    PIN15_RC1 = OUTPUT;
-    PIN16_RC0 = OUTPUT;
-    PIN17_RA2 = OUTPUT;
-    PIN18_RA1 = ICSPCLK;
-    PIN19_RA0 = ICSPDAT;
-    PIN20_VSS = VSS;
-
-    INPUT_PULLUP = 1;
-
-    pinconfig();
-    init_uart();
-    init_input();
-    init_adc();
-    init_pwm();
+    pinMode(PIN16_RC0,OUTPUT);
+    // (補足) ピン番号を使って pinMode(16,OUTPUT); とすることも可能
+    // (補足) OUTPUT はデフォルト動作なので省略可能
     
-    printf("-----\r\nrunning...\r\n");
+    pinMode(PIN15_RC1,ADC);
+    // (補足) ピン番号を使って pinMode(15,ADC); とすることも可能
 }
+
+void run(void) 
+{
+    while(1){
+        // 値は AN+ピン名称 で取得できる (例) RA1 の場合は ANA1
+        if(ANC1 > 512) RC0 = 1;
+        else RC0 = 0;    
+    }
+    
+    return;
+}
+*/
+
+
+/*
+// 例4. PWM
+// PWM1〜PWM4 を使用できる(その内3系統同時出力可能)
+void setup(void)
+{
+    // pinMode(ピン名称(または番号),モード)
+    //
+    // モード
+    // OUTPUT  : ディジタル出力 (デフォルト)
+    // INPUT   : ディジタル入力 (内部弱プルアップ 無効)
+    // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
+    // ADC     : アナログ入力 (10 bit)
+    // PWM1〜4 : パルス幅変調 (3系統同時出力可)
+    // TX      : シリアル通信 送信 (115200ボー)
+    // RX      : シリアル通信 受信 (115200ボー)
+    
+    pinMode(PIN10_RB7,PWM1);
+    // (補足) ピン番号を使って pinMode(10,PWM1); とすることも可能
+}
+
+void run(void) 
+{
+    while(1){
+        // 関数 pwm1〜4(周期,幅) で周期と幅をセットする
+        // 周期と幅はマイクロ秒で指定(1000マイクロ秒 = 1ミリ秒、最大 16383 マイクロ秒)
+        pwm1(16000,500);
+        __delay_ms(3000);
+        pwm1(16000,2500);
+        __delay_ms(3000);   
+    }
+    
+    return;
+}
+*/
+
+
+/*
+// 例5. シリアル通信
+// 通信速度は115200ボー
+void setup(void)
+{
+    // pinMode(ピン名称(または番号),モード)
+    //
+    // モード
+    // OUTPUT  : ディジタル出力 (デフォルト)
+    // INPUT   : ディジタル入力 (内部弱プルアップ 無効)
+    // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
+    // ADC     : アナログ入力 (10 bit)
+    // PWM1〜4 : パルス幅変調 (3系統同時出力可)
+    // TX      : シリアル通信 送信 (115200ボー)
+    // RX      : シリアル通信 受信 (115200ボー)
+    
+    pinMode(PIN02_RA5,TX);
+    // (補足) ピン番号を使って pinMode(2,TX); とすることも可能
+
+    pinMode(PIN03_RA4,RX);
+    // (補足) ピン番号を使って pinMode(3,RX); とすることも可能
+}
+
+void run(void) 
+{
+    while(1){
+        int c = getch();
+        if( c == 'a'){
+            RC0 = 1;
+            printf("ON\r\n");
+        }
+        if( c == 'b'){
+            RC0 = 0;
+            printf("OFF\r\n");
+        }
+    }
+    
+    return;
+}
+*/

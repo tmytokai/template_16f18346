@@ -1,18 +1,4 @@
 #include "common.h"
-#include "uart.h"
-#include "utils.h"
-#include "pwm.h"
-
-enum
-{
-    PWM_NUM = 4,
-    
-    PWM_DISABLE = 0,
-    PWM_ENABLE = 1,
-    
-    PWM_DEFAULT_PERIOD = 15000, // デフォルト周期(マイクロ秒)
-    PWM_DEFAULT_WIDTH = 5000 // デフォルト幅(マイクロ秒)
-};
 
 char pwm_status[PWM_NUM+1];
 char pwm_timer2 = 0;
@@ -75,7 +61,7 @@ void init_pwm_impl(const unsigned char no)
     unsigned char portb = 0;
     unsigned char portc = 0;
     
-    unsigned char type = PWM1+no-1;
+    unsigned char mode = PWM1+no-1;
     
     pwm_status[no] = PWM_DISABLE;
 
@@ -85,17 +71,11 @@ void init_pwm_impl(const unsigned char no)
     else if( ! pwm_timer6 ) timer = 6;
     else return;
 
-    unsigned char num = get_port(type,&porta,&portb,&portc);
+    unsigned char num = get_pinMode(mode,&porta,&portb,&portc);
     if( ! num ) return;
 
     pwm_status[no] = PWM_ENABLE;
-    
-    unsigned char pps = 0;    
-    if( no == 1 ) pps = 0b01100;
-    if( no == 2 ) pps = 0b01101;
-    if( no == 3 ) pps = 0b01110;
-    if( no == 4 ) pps = 0b01111;
-    
+        
     unsigned char tsel = 0;
     if( timer == 2 ){
         pwm_timer2 = no;
@@ -113,12 +93,12 @@ void init_pwm_impl(const unsigned char no)
     printf("-----\r\nPWM%d:\r\n",no);
     printf("timer = %d, portA = 0x%x, portB = 0x%x, portC = 0x%x\r\n",timer,porta,portb,portc);
     
-    set_pps(pps,porta,portb,portc);
+    set_outputpps(mode,porta,portb,portc);
 
-    if( no == 1 ) init_ccp1(tsel);
-    if( no == 2 ) init_ccp2(tsel);
-    if( no == 3 ) init_ccp3(tsel);
-    if( no == 4 ) init_ccp4(tsel);
+    if( mode == PWM1 ) init_ccp1(tsel);
+    if( mode == PWM2 ) init_ccp2(tsel);
+    if( mode == PWM3 ) init_ccp3(tsel);
+    if( mode == PWM4 ) init_ccp4(tsel);
 
     if( timer == 2 ) start_timer2();
     if( timer == 4 ) start_timer4();

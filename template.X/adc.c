@@ -1,16 +1,4 @@
 #include "common.h"
-#include "uart.h"
-#include "utils.h"
-#include "adc.h"
-
-enum
-{
-    ADC_DISABLE = 255,
-    ADC_CHARGE = 0,
-    ADC_GO = 1,
-
-    ADC_INTERVAL = 10000,  // サンプリング間隔(マイクロ秒)
-};
 
 volatile unsigned char adc_status;
 volatile unsigned short adc_value[ADC_MAXCH+1];
@@ -58,51 +46,51 @@ void init_adc(void)
     adc_maxidx = 0;
     for( unsigned char i=0; i < ADC_MAXCH+1; ++i ) adc_value[i] = 0;
     
-    unsigned char num = get_port(ADC,&porta,&portb,&portc);
+    unsigned char num = get_pinMode(ADC,&porta,&portb,&portc);
     if( num ) adc_status = ADC_GO;
     else return;
     
-    adc_chn[RA5PIN] = 0b000101;
-    adc_chn[RA4PIN] = 0b000100;
+    adc_chn[PIN02_RA5] = 0b000101;
+    adc_chn[PIN03_RA4] = 0b000100;
     // RA3 は MCLR/Vpp 固定
-    adc_chn[RA2PIN] = 0b000010;
+    adc_chn[PIN17_RA2] = 0b000010;
     // RA1 は ICSPCLK 固定
     // RA0 は ICSPDAT 固定
 
-    adc_chn[RB7PIN] = 0b001111;
-    adc_chn[RB6PIN] = 0b001110;
-    adc_chn[RB5PIN] = 0b001101;
-    adc_chn[RB4PIN] = 0b001100;
+    adc_chn[PIN10_RB7] = 0b001111;
+    adc_chn[PIN11_RB6] = 0b001110;
+    adc_chn[PIN12_RB5] = 0b001101;
+    adc_chn[PIN13_RB4] = 0b001100;
 
-    adc_chn[RC7PIN] = 0b010111;
-    adc_chn[RC6PIN] = 0b010110;
-    adc_chn[RC5PIN] = 0b010101;
-    adc_chn[RC4PIN] = 0b010100;
-    adc_chn[RC3PIN] = 0b010011;
-    adc_chn[RC2PIN] = 0b010010;
-    adc_chn[RC1PIN] = 0b010001;
-    adc_chn[RC0PIN] = 0b010000;
+    adc_chn[PIN09_RC7] = 0b010111;
+    adc_chn[PIN08_RC6] = 0b010110;
+    adc_chn[PIN05_RC5] = 0b010101;
+    adc_chn[PIN06_RC4] = 0b010100;
+    adc_chn[PIN07_RC3] = 0b010011;
+    adc_chn[PIN14_RC2] = 0b010010;
+    adc_chn[PIN15_RC1] = 0b010001;
+    adc_chn[PIN16_RC0] = 0b010000;
     
-    if( porta & 0b00100000 ) adc_pin[adc_maxidx++] = RA5PIN;
-    if( porta & 0b00010000 ) adc_pin[adc_maxidx++] = RA4PIN;
+    if( porta & 0b00100000 ) adc_pin[adc_maxidx++] = PIN02_RA5;
+    if( porta & 0b00010000 ) adc_pin[adc_maxidx++] = PIN03_RA4;
     // RA3 は MCLR/Vpp 固定
-    if( porta & 0b00000100 ) adc_pin[adc_maxidx++] = RA2PIN;
+    if( porta & 0b00000100 ) adc_pin[adc_maxidx++] = PIN17_RA2;
     // RA1 は ICSPCLK 固定
     // RA0 は ICSPDAT 固定
 
-    if( portb & 0b10000000 ) adc_pin[adc_maxidx++] = RB7PIN;
-    if( portb & 0b01000000 ) adc_pin[adc_maxidx++] = RB6PIN;
-    if( portb & 0b00100000 ) adc_pin[adc_maxidx++] = RB5PIN;
-    if( portb & 0b00010000 ) adc_pin[adc_maxidx++] = RB4PIN;
+    if( portb & 0b10000000 ) adc_pin[adc_maxidx++] = PIN10_RB7;
+    if( portb & 0b01000000 ) adc_pin[adc_maxidx++] = PIN11_RB6;
+    if( portb & 0b00100000 ) adc_pin[adc_maxidx++] = PIN12_RB5;
+    if( portb & 0b00010000 ) adc_pin[adc_maxidx++] = PIN13_RB4;
 
-    if( portc & 0b10000000 ) adc_pin[adc_maxidx++] = RC7PIN;
-    if( portc & 0b01000000 ) adc_pin[adc_maxidx++] = RC6PIN;
-    if( portc & 0b00100000 ) adc_pin[adc_maxidx++] = RC5PIN;
-    if( portc & 0b00010000 ) adc_pin[adc_maxidx++] = RC4PIN;
-    if( portc & 0b00001000 ) adc_pin[adc_maxidx++] = RC3PIN;
-    if( portc & 0b00000100 ) adc_pin[adc_maxidx++] = RC2PIN;
-    if( portc & 0b00000010 ) adc_pin[adc_maxidx++] = RC1PIN;
-    if( portc & 0b00000001 ) adc_pin[adc_maxidx++] = RC0PIN;
+    if( portc & 0b10000000 ) adc_pin[adc_maxidx++] = PIN09_RC7;
+    if( portc & 0b01000000 ) adc_pin[adc_maxidx++] = PIN08_RC6;
+    if( portc & 0b00100000 ) adc_pin[adc_maxidx++] = PIN05_RC5;
+    if( portc & 0b00010000 ) adc_pin[adc_maxidx++] = PIN06_RC4;
+    if( portc & 0b00001000 ) adc_pin[adc_maxidx++] = PIN07_RC3;
+    if( portc & 0b00000100 ) adc_pin[adc_maxidx++] = PIN14_RC2;
+    if( portc & 0b00000010 ) adc_pin[adc_maxidx++] = PIN15_RC1;
+    if( portc & 0b00000001 ) adc_pin[adc_maxidx++] = PIN16_RC0;
 
     TRISA |=  porta;
     ANSELA |= porta;
