@@ -1,7 +1,7 @@
 #include "common.h"
 
-unsigned char tx_status;
-unsigned char rx_status;
+volatile unsigned char tx_status;
+volatile unsigned char rx_status;
 
 // UART 初期化
 void init_uart(void)

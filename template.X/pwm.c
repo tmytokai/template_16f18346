@@ -1,9 +1,9 @@
 #include "common.h"
 
-char pwm_status[PWM_NUM+1];
-char pwm_timer2 = 0;
-char pwm_timer4 = 0;
-char pwm_timer6 = 0;
+volatile char pwm_status[PWM_NUM+1];
+volatile char pwm_timer2 = 0;
+volatile char pwm_timer4 = 0;
+volatile char pwm_timer6 = 0;
 
 void init_ccp1(const unsigned char tsel)
 {

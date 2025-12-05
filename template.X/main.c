@@ -1,5 +1,5 @@
 #include "common.h"
-
+/*
 // 例1. LED点滅
 void setup(void)
 {
@@ -30,7 +30,7 @@ void run(void)
 
     return;
 }
-
+*/
 
 /*
 // 例2. ディジタル入力(プルアップ)
@@ -175,6 +175,117 @@ void run(void)
             RC0 = 0;
             printf("OFF\r\n");
         }
+    }
+    
+    return;
+}
+*/
+
+
+// 例6. INT割り込み
+
+int count = 0;
+
+// INTのISR
+void isr_int(void)
+{
+    // チャタリング対策
+    __delay_ms(50);
+    if (RA2 == 1) return;
+        
+    count++;
+}
+
+void setup(void)
+{
+    // pinMode(ピン名称(または番号),モード)
+    //
+    // モード
+    // OUTPUT  : ディジタル出力 (デフォルト)
+    // INPUT   : ディジタル入力 (内部弱プルアップ 無効)
+    // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
+    // ADC     : アナログ入力 (10 bit)
+    // PWM1〜4 : パルス幅変調 (3系統同時出力可)
+    // TX      : シリアル通信 送信 (115200ボー)
+    // RX      : シリアル通信 受信 (115200ボー)
+    // INT     : INT割り込み
+    
+    pinMode(PIN02_RA5,TX);
+
+    // INT割り込み設定
+
+    // INTピン ※ 内部弱プルアップ有効
+    pinMode(PIN17_RA2,INT);
+    
+    // 詳細設定
+    // 引数1: ISRのアドレス
+    // 引数2: 割り込みを行うタイミング
+    //        0 をセットすると立ち下がり(High→Low)
+    //        1 をセットすると立ち上がり(Low→High)
+    config_int(isr_int,0);
+}
+
+void run(void) 
+{
+    while(1){
+        printf("%d\r\n",count);
+        __delay_ms(2000);
+    }
+    
+    return;
+}
+
+
+/*
+// 例7. タイマー割り込み
+
+int count1 = 0;
+int count3 = 0;
+
+// タイマー1のISR
+void isr_timer1(void)
+{
+    count1++;
+}
+
+// タイマー3のISR
+void isr_timer3(void)
+{
+    count3++;
+}
+
+void setup(void)
+{
+    // pinMode(ピン名称(または番号),モード)
+    //
+    // モード
+    // OUTPUT  : ディジタル出力 (デフォルト)
+    // INPUT   : ディジタル入力 (内部弱プルアップ 無効)
+    // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
+    // ADC     : アナログ入力 (10 bit)
+    // PWM1〜4 : パルス幅変調 (3系統同時出力可)
+    // TX      : シリアル通信 送信 (115200ボー)
+    // RX      : シリアル通信 受信 (115200ボー)
+    
+    pinMode(PIN02_RA5,TX);
+
+    // タイマー割り込み設定
+    // タイマー1と3で割り込み可 ※ タイマー5はADCで使用
+ 
+    // 詳細設定
+    // 引数1: ISRのアドレス
+    // 引数2: 割り込み間隔(マイクロ秒) ※ 最大 524,280 マイクロ秒
+    config_timer1(isr_timer1,10000);
+    config_timer3(isr_timer3,500000);
+}
+
+void run(void) 
+{
+    while(1){
+        printf("-----\r\n");
+        printf("count1= %d\r\n",count1);
+        printf("count3= %d\r\n",count3);
+        __delay_ms(1000);
     }
     
     return;

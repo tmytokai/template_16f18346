@@ -9,6 +9,7 @@
 #include "pps.h"
 #include "pwm.h"
 #include "uart.h"
+#include "interrupt.h"
 
 
 #define _XTAL_FREQ 4000000
@@ -27,6 +28,13 @@ enum
     MCLR,
     TX,
     RX,
+    INT,
+    SDO,
+    SDI,
+    SCK,
+    SDA,
+    SCL,
+
     ICSPCLK,
     ICSPDAT,
     VSS

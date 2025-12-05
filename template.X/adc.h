@@ -11,7 +11,7 @@ enum
 };
 
 void init_adc(void);
-void adc_isr(void);
+void isr_adc(void);
 
 extern volatile unsigned short adc_value[ADC_MAXCH+1];;
 

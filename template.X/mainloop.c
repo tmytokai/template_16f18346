@@ -12,14 +12,6 @@ void main(void)
     return;
 }
 
-void __interrupt () isr(void) 
-{
-    if( PIR1bits.TMR1IF ){
-        adc_isr();
-        PIR1bits.TMR1IF = 0;
-    }
-}
-
 void init()
 {
     // 周波数 = Freq/DIV = 4/1 = 4MHz
@@ -42,6 +34,10 @@ void init()
     init_input();
     init_adc();
     init_pwm();
+
+    // 割り込み関係は最後に初期化
+    init_int();
+    init_timer();
     
     printf("-----\r\nrunning...\r\n");
 }

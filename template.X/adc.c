@@ -7,7 +7,7 @@ volatile unsigned short adc_pin[ADC_MAXCH];
 volatile unsigned char adc_idx;
 volatile unsigned char adc_maxidx;
 
-void adc_isr(void)
+void isr_adc(void)
 {
     if( adc_status == ADC_GO ){
             
@@ -102,10 +102,7 @@ void init_adc(void)
     printf("-----\r\nADC:\r\n");
     printf("portA = 0x%x, portB = 0x%x, portC = 0x%x\r\n",porta,portb,portc);
 
-    // 全割り込み処理不可
-    INTCONbits.GIE = 0;
-
-    ADRES = 0;
+    ADRES = 0; // ADC Result レジスタをクリア
     
     // ADC 結果右詰め
     ADCON1bits.ADFM = 1;
@@ -120,18 +117,6 @@ void init_adc(void)
     // ADC 有効化
     ADCON0bits.ADON = 1;
 
-    // タイマー1を使用
-    // 4Mhz で駆動しているのでタイマーのカウントアップ間隔 = prescale*1/(FOSC/4) = 1/(4/4*10^6) = 1 マイクロ秒
-    T1CONbits.TMR1CS = 0b00; // クロック : FOSC/4
-    T1CONbits.T1CKPS = 0b00; // prescale : 1
-    TMR1 = 65535-ADC_INTERVAL;
-    PIR1bits.TMR1IF = 0; // タイマー 割り込みフラグリセット
-    PIE1bits.TMR1IE = 1; // タイマー 割り込み許可
-    T1CONbits.TMR1ON = 1; // タイマー 有効化
-
-    // 周辺割り込み許可
-    INTCONbits.PEIE = 1;
-    
-    // 全割り込み処理許可
-    INTCONbits.GIE = 1; 
+    // タイマー5を使用
+    config_timer5(isr_adc,ADC_INTERVAL);
 }
