@@ -311,11 +311,16 @@ void setup(void)
     pinMode(PIN02_RA5,TX);
 
     // タイマー割り込み設定
-    // タイマー1と3で割り込み可 ※ タイマー5はADCで使用
-    // 引数1: ISRのアドレス
-    // 引数2: 割り込み間隔(マイクロ秒) ※ 最大 524,280 マイクロ秒
-    config_timer1(isr_timer1,10000);
-    config_timer3(isr_timer3,500000);
+    // 16bitタイマー1、3、5で割り込み可 
+    // (注意) ADCを使用する場合はタイマー5は使用不可
+    
+    // 割り込み間隔設定 (マイクロ秒、最大 524280)
+    timer1(100000);
+    timer3(500000);
+    
+    // 引数: ISRのアドレス設定
+    config_timer1(isr_timer1);
+    config_timer3(isr_timer3);
 }
 
 void run(void) 

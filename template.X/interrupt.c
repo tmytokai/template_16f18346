@@ -4,8 +4,8 @@ volatile pisr int_pisr = NULL;
 volatile char int_edg = 0;
 
 volatile pisr timer_pisr[TIMER_NUM+1] = {NULL};
-volatile char timer_prescale[TIMER_NUM+1] = {0};
-volatile unsigned timer_interval[TIMER_NUM+1] = {0};
+volatile unsigned char timer_ckps[TIMER_NUM+1] = {0};
+volatile unsigned short timer_interval[TIMER_NUM+1] = {0};
 
 void isr_dummy()
 {}
@@ -92,46 +92,41 @@ void config_int(const pisr pisr, const char edg)
 // 4Mhz で駆動しているのでタイマーのカウントアップ間隔 = prescale*1/(FOSC/4) = prescale*1/(4/4*10^6) = prescale マイクロ秒
 //
 
+void start_timer1()
+{
+    T1CONbits.TMR1CS = 0b00; // クロック = FOSC/4
+    PIE1bits.TMR1IE = 1; // タイマー 割り込み許可
+    T1CONbits.TMR1ON = 1; // タイマー 有効化
+}
+
+void start_timer3()
+{
+    T3CONbits.TMR3CS = 0b00; // クロック = FOSC/4
+    PIE3bits.TMR3IE = 1; // タイマー 割り込み許可
+    T3CONbits.TMR3ON = 1; // タイマー 有効化
+}
+
+void start_timer5()
+{
+    T5CONbits.TMR5CS = 0b00; // クロック = FOSC/4
+    PIE4bits.TMR5IE = 1; // タイマー 割り込み許可
+    T5CONbits.TMR5ON = 1; // タイマー 有効化
+}
+
 void init_timer_impl(const int no)
 {
     if( timer_pisr[no] == NULL ) return;
 
-    unsigned char ckps = 0b00;
-    if( timer_prescale[no] == 2 ) ckps = 0b01;
-    if( timer_prescale[no] == 4 ) ckps = 0b10;
-    if( timer_prescale[no] == 8 ) ckps = 0b11;
-
-    printf("-----\r\nTIMER%d:\r\n",no);
-    printf("interval = %ld, prescale = %d, ckps = %d\r\n",(long)timer_interval[no]*timer_prescale[no],timer_prescale[no],ckps);
+    printf("-----\r\nTIMER:\r\n");
+    printf("timer = %d\r\n",no);
 
     // 全割り込み処理不可
     INTCONbits.GIE = 0;
 
-    if( no == 1){
-        T1CONbits.TMR1CS = 0b00; // クロック = FOSC/4
-        T1CONbits.T1CKPS = ckps; // prescale = 1 or 2 or 4 or 8
-        TMR1 = 65535-timer_interval[1];
-        PIR1bits.TMR1IF = 0; // タイマー 割り込みフラグリセット
-        PIE1bits.TMR1IE = 1; // タイマー 割り込み許可
-        T1CONbits.TMR1ON = 1; // タイマー 有効化
-    }
-    if( no == 3){
-        T3CONbits.TMR3CS = 0b00; // クロック = FOSC/4
-        T3CONbits.T3CKPS = ckps; // prescale = 1 or 2 or 4 or 8
-        TMR3 = 65535-timer_interval[3];
-        PIR3bits.TMR3IF = 0; // タイマー 割り込みフラグリセット
-        PIE3bits.TMR3IE = 1; // タイマー 割り込み許可
-        T3CONbits.TMR3ON = 1; // タイマー 有効化
-    }
-    if( no == 5){
-        T5CONbits.TMR5CS = 0b00; // クロック = FOSC/4
-        T5CONbits.T5CKPS = ckps; // prescale = 1 or 2 or 4 or 8
-        TMR5 = 65535-timer_interval[5];
-        PIR4bits.TMR5IF = 0; // タイマー 割り込みフラグリセット
-        PIE4bits.TMR5IE = 1; // タイマー 割り込み許可
-        T5CONbits.TMR5ON = 1; // タイマー 有効化
-    }
-    
+    if( no == 1) start_timer1();
+    if( no == 3) start_timer3();
+    if( no == 5) start_timer5();
+
     // 周辺割り込み許可
     INTCONbits.PEIE = 1;
     
@@ -143,48 +138,100 @@ void init_timer(void)
 {
     if( timer_pisr[1] == NULL ){
         // コンパイル時のwarning表示防止
-        config_timer1(NULL,0);
+        config_timer1(NULL);
+        timer1(0);
         timer_pisr[1] = isr_dummy;
     }
     else init_timer_impl(1);
         
     if( timer_pisr[3] == NULL ){
         // コンパイル時のwarning表示防止
-        config_timer3(NULL,0);
+        config_timer3(NULL);
+        timer3(0);
         timer_pisr[3] = isr_dummy;
     }
     else init_timer_impl(3);
     
     if( timer_pisr[5] == NULL ){
         // コンパイル時のwarning表示防止
-        config_timer5(NULL,0);
+        config_timer5(NULL);
+        timer5(0);
         timer_pisr[5] = isr_dummy;
     }
     else init_timer_impl(5);
 }
 
-void config_timer_impl(const int no, const pisr pisr, const long interval)
+void config_timer1(const pisr pisr)
 {
     if( pisr == NULL ) return;
-    timer_pisr[no] = pisr;
-    if( interval <= 65535 ) timer_prescale[no] = 1;
-    else if( interval <= 65535*2 ) timer_prescale[no] = 2;
-    else if( interval <= 65535*4 ) timer_prescale[no] = 4;
-    else timer_prescale[no] = 8;
-    timer_interval[no] = (unsigned short)(interval/timer_prescale[no]); 
+    timer_pisr[1] = pisr;
 }
 
-void config_timer1(const pisr pisr, const long interval)
+void config_timer3(const pisr pisr)
 {
-    config_timer_impl(1,pisr,interval);
+    if( pisr == NULL ) return;
+    timer_pisr[3] = pisr;
 }
 
-void config_timer3(const pisr pisr, const long interval)
+void config_timer5(const pisr pisr)
 {
-    config_timer_impl(3,pisr,interval);
+    if( pisr == NULL ) return;
+    timer_pisr[5] = pisr;
 }
 
-void config_timer5(const pisr pisr, const long interval)
+void set_timer_parameter(const int no, const long interval)
 {
-    config_timer_impl(5,pisr,interval);
+    long interval2 = (interval > 65535*8 ? 65535*8 : interval);
+    long prescale = 0;
+
+    if( interval2 <= 65535 ) prescale = 1;
+    else if( interval2 <= 65535*2 ) prescale = 2;
+    else if( interval2 <= 65535*4 ) prescale = 4;
+    else prescale = 8;
+    
+    timer_ckps[no] = 0b00;
+    if( prescale == 2 ) timer_ckps[no] = 0b01;
+    if( prescale == 4 ) timer_ckps[no] = 0b10;
+    if( prescale == 8 ) timer_ckps[no] = 0b11;  
+    timer_interval[no] = (unsigned short)(interval2/prescale); 
 }
+
+void set_timer1()
+{
+    T1CONbits.T1CKPS = timer_ckps[1];
+    TMR1 = 65535-timer_interval[1];
+    PIR1bits.TMR1IF = 0; // タイマー 割り込みフラグリセット
+}
+
+void set_timer3()
+{
+    T3CONbits.T3CKPS = timer_ckps[3]; // prescale = 1 or 2 or 4 or 8
+    TMR3 = 65535-timer_interval[3];
+    PIR3bits.TMR3IF = 0; // タイマー 割り込みフラグリセット
+}
+
+void set_timer5()
+{
+    T5CONbits.T5CKPS = timer_ckps[5]; // prescale = 1 or 2 or 4 or 8
+    TMR5 = 65535-timer_interval[5];
+    PIR4bits.TMR5IF = 0; // タイマー 割り込みフラグリセット
+}
+
+void timer1(const long interval)
+{
+    set_timer_parameter(1,interval);
+    set_timer1();
+}
+
+void timer3(const long interval)
+{
+    set_timer_parameter(3,interval);
+    set_timer3();
+}
+
+void timer5(const long interval)
+{
+    set_timer_parameter(5,interval);
+    set_timer5();
+}
+

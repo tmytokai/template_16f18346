@@ -118,5 +118,6 @@ void init_adc(void)
     ADCON0bits.ADON = 1;
 
     // タイマー5を使用
-    config_timer5(isr_adc,ADC_INTERVAL);
+    timer5(ADC_INTERVAL);
+    config_timer5(isr_adc);
 }
