@@ -13,6 +13,8 @@
       <itemPath>pps.h</itemPath>
       <itemPath>pin.h</itemPath>
       <itemPath>interrupt.h</itemPath>
+      <itemPath>spi.h</itemPath>
+      <itemPath>i2c.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -32,6 +34,8 @@
       <itemPath>pin.c</itemPath>
       <itemPath>mainloop.c</itemPath>
       <itemPath>interrupt.c</itemPath>
+      <itemPath>spi.c</itemPath>
+      <itemPath>i2c.c</itemPath>
     </logicalFolder>
     <logicalFolder name="f1" displayName="Source Files" projectFiles="true">
       <itemPath>main.c</itemPath>

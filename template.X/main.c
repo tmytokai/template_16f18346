@@ -1,5 +1,5 @@
 #include "common.h"
-/*
+
 // 例1. LED点滅
 void setup(void)
 {
@@ -11,8 +11,14 @@ void setup(void)
     // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
     // ADC     : アナログ入力 (10 bit)
     // PWM1〜4 : パルス幅変調 (3系統同時出力可)
-    // TX      : シリアル通信 送信 (115200ボー)
-    // RX      : シリアル通信 受信 (115200ボー)
+    // TX      : シリアル通信 送信 (115200 ボー)
+    // RX      : シリアル通信 受信 (115200 ボー)
+    // INT     : INT割り込み
+    // SDO     : SPI SDO
+    // SDI     : SPI SDI
+    // SCK     : SPI SCK (1MHz)
+    // SDA     : I2C SDA
+    // SCL     : I2C SCL (100 Hz)
     
     pinMode(PIN16_RC0,OUTPUT);
     // (補足) ピン番号を使って pinMode(16,OUTPUT); とすることも可能
@@ -30,7 +36,7 @@ void run(void)
 
     return;
 }
-*/
+
 
 /*
 // 例2. ディジタル入力(プルアップ)
@@ -44,8 +50,14 @@ void setup(void)
     // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
     // ADC     : アナログ入力 (10 bit)
     // PWM1〜4 : パルス幅変調 (3系統同時出力可)
-    // TX      : シリアル通信 送信 (115200ボー)
-    // RX      : シリアル通信 受信 (115200ボー)
+    // TX      : シリアル通信 送信 (115200 ボー)
+    // RX      : シリアル通信 受信 (115200 ボー)
+    // INT     : INT割り込み
+    // SDO     : SPI SDO
+    // SDI     : SPI SDI
+    // SCK     : SPI SCK (1MHz)
+    // SDA     : I2C SDA
+    // SCL     : I2C SCL (100 Hz)
     
     pinMode(PIN16_RC0,OUTPUT);
     // (補足) ピン番号を使って pinMode(16,OUTPUT); とすることも可能
@@ -80,8 +92,14 @@ void setup(void)
     // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
     // ADC     : アナログ入力 (10 bit)
     // PWM1〜4 : パルス幅変調 (3系統同時出力可)
-    // TX      : シリアル通信 送信 (115200ボー)
-    // RX      : シリアル通信 受信 (115200ボー)
+    // TX      : シリアル通信 送信 (115200 ボー)
+    // RX      : シリアル通信 受信 (115200 ボー)
+    // INT     : INT割り込み
+    // SDO     : SPI SDO
+    // SDI     : SPI SDI
+    // SCK     : SPI SCK (1MHz)
+    // SDA     : I2C SDA
+    // SCL     : I2C SCL (100 Hz)
     
     pinMode(PIN16_RC0,OUTPUT);
     // (補足) ピン番号を使って pinMode(16,OUTPUT); とすることも可能
@@ -117,8 +135,14 @@ void setup(void)
     // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
     // ADC     : アナログ入力 (10 bit)
     // PWM1〜4 : パルス幅変調 (3系統同時出力可)
-    // TX      : シリアル通信 送信 (115200ボー)
-    // RX      : シリアル通信 受信 (115200ボー)
+    // TX      : シリアル通信 送信 (115200 ボー)
+    // RX      : シリアル通信 受信 (115200 ボー)
+    // INT     : INT割り込み
+    // SDO     : SPI SDO
+    // SDI     : SPI SDI
+    // SCK     : SPI SCK (1MHz)
+    // SDA     : I2C SDA
+    // SCL     : I2C SCL (100 Hz)
     
     pinMode(PIN10_RB7,PWM1);
     // (補足) ピン番号を使って pinMode(10,PWM1); とすることも可能
@@ -153,8 +177,14 @@ void setup(void)
     // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
     // ADC     : アナログ入力 (10 bit)
     // PWM1〜4 : パルス幅変調 (3系統同時出力可)
-    // TX      : シリアル通信 送信 (115200ボー)
-    // RX      : シリアル通信 受信 (115200ボー)
+    // TX      : シリアル通信 送信 (115200 ボー)
+    // RX      : シリアル通信 受信 (115200 ボー)
+    // INT     : INT割り込み
+    // SDO     : SPI SDO
+    // SDI     : SPI SDI
+    // SCK     : SPI SCK (1MHz)
+    // SDA     : I2C SDA
+    // SCL     : I2C SCL (100 Hz)
     
     pinMode(PIN02_RA5,TX);
     // (補足) ピン番号を使って pinMode(2,TX); とすることも可能
@@ -182,6 +212,7 @@ void run(void)
 */
 
 
+/*
 // 例6. INT割り込み
 
 int count = 0;
@@ -206,18 +237,21 @@ void setup(void)
     // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
     // ADC     : アナログ入力 (10 bit)
     // PWM1〜4 : パルス幅変調 (3系統同時出力可)
-    // TX      : シリアル通信 送信 (115200ボー)
-    // RX      : シリアル通信 受信 (115200ボー)
+    // TX      : シリアル通信 送信 (115200 ボー)
+    // RX      : シリアル通信 受信 (115200 ボー)
     // INT     : INT割り込み
+    // SDO     : SPI SDO
+    // SDI     : SPI SDI
+    // SCK     : SPI SCK (1MHz)
+    // SDA     : I2C SDA
+    // SCL     : I2C SCL (100 Hz)
     
     pinMode(PIN02_RA5,TX);
 
-    // INT割り込み設定
-
-    // INTピン ※ 内部弱プルアップ有効
+    // INT割り込みピン ※ 内部弱プルアップ有効
     pinMode(PIN17_RA2,INT);
     
-    // 詳細設定
+    // INT割り込み設定
     // 引数1: ISRのアドレス
     // 引数2: 割り込みを行うタイミング
     //        0 をセットすると立ち下がり(High→Low)
@@ -229,11 +263,12 @@ void run(void)
 {
     while(1){
         printf("%d\r\n",count);
-        __delay_ms(2000);
+        __delay_ms(1000);
     }
     
     return;
 }
+*/
 
 
 /*
@@ -264,15 +299,19 @@ void setup(void)
     // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
     // ADC     : アナログ入力 (10 bit)
     // PWM1〜4 : パルス幅変調 (3系統同時出力可)
-    // TX      : シリアル通信 送信 (115200ボー)
-    // RX      : シリアル通信 受信 (115200ボー)
+    // TX      : シリアル通信 送信 (115200 ボー)
+    // RX      : シリアル通信 受信 (115200 ボー)
+    // INT     : INT割り込み
+    // SDO     : SPI SDO
+    // SDI     : SPI SDI
+    // SCK     : SPI SCK (1MHz)
+    // SDA     : I2C SDA
+    // SCL     : I2C SCL (100 Hz)
     
     pinMode(PIN02_RA5,TX);
 
     // タイマー割り込み設定
     // タイマー1と3で割り込み可 ※ タイマー5はADCで使用
- 
-    // 詳細設定
     // 引数1: ISRのアドレス
     // 引数2: 割り込み間隔(マイクロ秒) ※ 最大 524,280 マイクロ秒
     config_timer1(isr_timer1,10000);
@@ -291,3 +330,138 @@ void run(void)
     return;
 }
 */
+
+
+/*
+// 例8. SPIマスターモード
+void setup(void)
+{
+    // pinMode(ピン名称(または番号),モード)
+    //
+    // モード
+    // OUTPUT  : ディジタル出力 (デフォルト)
+    // INPUT   : ディジタル入力 (内部弱プルアップ 無効)
+    // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
+    // ADC     : アナログ入力 (10 bit)
+    // PWM1〜4 : パルス幅変調 (3系統同時出力可)
+    // TX      : シリアル通信 送信 (115200 ボー)
+    // RX      : シリアル通信 受信 (115200 ボー)
+    // INT     : INT割り込み
+    // SDO     : SPI SDO
+    // SDI     : SPI SDI
+    // SCK     : SPI SCK (1MHz)
+    // SDA     : I2C SDA
+    // SCL     : I2C SCL (100 Hz)
+    
+    pinMode(PIN02_RA5,TX);
+    pinMode(PIN03_RA4,RX);
+    
+    // SPIピン設定
+    pinMode(PIN06_RC4,SDO);
+    pinMode(PIN07_RC3,SDI);
+    pinMode(PIN08_RC6,SCK);
+
+    // SPI設定
+    // 引数1: SPIモード(0〜3)
+    // 引数2: サンプリングタイミング(0か1)、とりあえず0で試して、うまく通信できない時は1にする
+    config_spi(0,0);
+}
+
+void run(void) 
+{
+    // RC7をCSとする
+    RC7 = 1;
+    __delay_ms(100); // 子機の初期化待ち(時間は適当)
+    RC7 = 0;
+    __delay_ms(100); // 子機の初期化待ち(時間は適当)
+
+    while(1){
+        
+       int c = getch();
+       if( c != EOF && c != '\n'){
+           
+           // 1文字送信
+           spi_putch((char)c);
+           
+           // 1文字受信
+           printf("%c\r\n",spi_getch());
+       }
+    }
+    return;
+}
+*/
+
+
+/*
+// 例9. I2Cマスターモード
+void setup(void)
+{
+    // pinMode(ピン名称(または番号),モード)
+    //
+    // モード
+    // OUTPUT  : ディジタル出力 (デフォルト)
+    // INPUT   : ディジタル入力 (内部弱プルアップ 無効)
+    // INPUT_PULLUP   : ディジタル入力 (内部弱プルアップ 有効)
+    // ADC     : アナログ入力 (10 bit)
+    // PWM1〜4 : パルス幅変調 (3系統同時出力可)
+    // TX      : シリアル通信 送信 (115200 ボー)
+    // RX      : シリアル通信 受信 (115200 ボー)
+    // INT     : INT割り込み
+    // SDO     : SPI SDO
+    // SDI     : SPI SDI
+    // SCK     : SPI SCK (1MHz)
+    // SDA     : I2C SDA
+    // SCL     : I2C SCL (100 Hz)
+
+    pinMode(PIN02_RA5,TX);
+    pinMode(PIN03_RA4,RX);
+
+    // I2Cピン設定
+    pinMode(PIN06_RC4,SDA);
+    pinMode(PIN07_RC3,SCL);
+}
+
+void run(void) 
+{
+    int lng = 0;
+    char data[64];
+    
+    __delay_ms(100); // 子機の初期化待ち(時間は適当)
+
+    while(1){
+        
+       int c = getch();
+       if( c != EOF && c != '\n'){
+           
+           printf("%c",c);
+           data[lng++] = (char)c;
+
+           if( c == '\r' ){
+                data[lng]='\0';
+                printf( "\r\nsend: %s\r\n", data );
+
+                // 送信
+                i2c_start();
+                i2c_putch( ( 0x01 << 1) + 0 ); // 子機のアドレス(7bit) + write指示(0)
+                for(int i=0; i<lng; ++i ) i2c_putch(data[i]);
+                i2c_stop();                
+                
+                __delay_ms(50);
+
+                lng = 5; // 5文字受信
+                
+                // 受信
+                i2c_start();
+                i2c_putch( ( 0x01 << 1) + 1 ); // 子機のアドレス(7bit) + read指示(1)
+                for(int i=0; i<lng-1; ++i ) data[i] = i2c_getch(0); // ACK を送信して受信続行
+                data[lng-1] = i2c_getch(1); // 最後にNACK を送信して受信終了
+                i2c_stop();
+                
+                data[lng]='\0';
+                printf( "recv: %s\r\n", data );
+                lng = 0;
+           }           
+       }
+    }
+}
+ */

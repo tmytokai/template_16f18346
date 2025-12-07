@@ -34,6 +34,8 @@ void init()
     init_input();
     init_adc();
     init_pwm();
+    init_spi();
+    init_i2c();
 
     // 割り込み関係は最後に初期化
     init_int();

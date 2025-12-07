@@ -7,6 +7,9 @@ volatile pisr timer_pisr[TIMER_NUM+1] = {NULL};
 volatile char timer_prescale[TIMER_NUM+1] = {0};
 volatile unsigned timer_interval[TIMER_NUM+1] = {0};
 
+void isr_dummy()
+{}
+
 void __interrupt () isr(void) 
 {
     INTCONbits.GIE = 0;
@@ -42,7 +45,12 @@ void init_int(void)
     unsigned char portb = 0;
     unsigned char portc = 0;
     
-    if( int_pisr == NULL ) return;
+    if( int_pisr == NULL ){
+        // コンパイル時のwarning表示防止
+        config_int(NULL,0);
+        int_pisr = isr_dummy;
+        return;
+    }
     
     unsigned char num = get_pinMode(INT,&porta,&portb,&portc);
     if( num != 1 ) return;
@@ -72,13 +80,14 @@ void init_int(void)
 
 void config_int(const pisr pisr, const char edg)
 {
+    if( pisr == NULL ) return;
     int_pisr = pisr;
     int_edg = edg;
 }
 
 
 //
-// TIMER割り込み
+// タイマー割り込み
 //
 // 4Mhz で駆動しているのでタイマーのカウントアップ間隔 = prescale*1/(FOSC/4) = prescale*1/(4/4*10^6) = prescale マイクロ秒
 //
@@ -132,12 +141,26 @@ void init_timer_impl(const int no)
 
 void init_timer(void)
 {
-    init_timer_impl(1);
-    init_timer_impl(3);
-    init_timer_impl(5);
+    if( timer_pisr[1] == NULL ){
+        // コンパイル時のwarning表示防止
+        config_timer1(NULL,0);
+        timer_pisr[1] = isr_dummy;
+    }
+    else init_timer_impl(1);
+        
+    if( timer_pisr[3] == NULL ){
+        // コンパイル時のwarning表示防止
+        config_timer3(NULL,0);
+        timer_pisr[3] = isr_dummy;
+    }
+    else init_timer_impl(3);
     
-    config_timer1(NULL,0); // コンパイル時のwaring表示防止
-    config_timer3(NULL,0); // コンパイル時のwaring表示防止
+    if( timer_pisr[5] == NULL ){
+        // コンパイル時のwarning表示防止
+        config_timer5(NULL,0);
+        timer_pisr[5] = isr_dummy;
+    }
+    else init_timer_impl(5);
 }
 
 void config_timer_impl(const int no, const pisr pisr, const long interval)
