@@ -1,6 +1,6 @@
 #include "common.h"
 
-volatile char i2c_status = 255;
+volatile char i2c_status = 1;
 
 // I2C 初期設定
 void init_i2c(void)
@@ -9,6 +9,13 @@ void init_i2c(void)
     unsigned char portb = 0;
     unsigned char portc = 0;
     
+    unsigned char num = get_pinMode(SDA,&porta,&portb,&portc);
+    if( num != 1 ) i2c_status = 255;
+    else{
+        num = get_pinMode(SCL,&porta,&portb,&portc);
+        if( num != 1 ) i2c_status = 255;
+    }
+
     // コンパイル時のwarning表示防止
     if(i2c_status == 255 ){
         i2c_start();
@@ -17,11 +24,6 @@ void init_i2c(void)
         i2c_getch(0);
         return;
     }
-    
-    unsigned char num = get_pinMode(SDA,&porta,&portb,&portc);
-    if( num != 1 ) return;
-    num = get_pinMode(SCL,&porta,&portb,&portc);
-    if( num != 1 ) return;
 
     printf("-----\r\nI2C:\r\n");
     get_pinMode(SDA,&porta,&portb,&portc);
